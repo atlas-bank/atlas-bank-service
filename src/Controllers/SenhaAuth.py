@@ -1,27 +1,12 @@
 def SenhaAutenticador(senha):
+    if len(senha) < 8:
+        raise Exception("Senha curta demais!")
 
-    maiuscula = False
-    minuscula = False
-    numero = False
+    elif not any(c.isupper() for c in senha):
+        raise Exception("Deve conter ao menos uma letra Maiúscula!")
 
-    validacao = False
+    elif not any(c.isloweer() for c in senha):
+        raise Exception("Deve conter ao menos uma letra Minúscula!")
 
-    for c in senha:
-
-        if c.isupper():
-            maiuscula = True
-
-        elif c.islower():
-            minuscula = True
-
-        elif c.isdigit():
-            numero = True
-
-
-    if maiuscula and minuscula and numero and len(senha) > 8:
-        validacao = True
-
-    else:
-        print("Senha fraca ou não atende aos requisitos.\nRequisitos:\n-Letras Maiúsculas\n-Letras Minúsculas\n-Mais de 8 Caracteres")
-
-    return validacao
+    elif not any(c.isdigit() for c in senha):
+        raise Exception("Deve conter ao menos um Número!")
