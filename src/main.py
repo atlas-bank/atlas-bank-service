@@ -2,7 +2,7 @@ from View.LoginView import menu
 from View.LoginView import logincpf
 from View.LoginView import loginsenha
 from View.LoginView import saida
-from Controllers.SenhaAuth import SenhaAutenticador
+from Controllers.SenhaAuth import raw_password_validator
 from Controllers.CPFAuth import CPFAutenticador
 
 while True:
@@ -16,7 +16,7 @@ while True:
 
         if validacaoCPF:
             senha = loginsenha()
-            validacaoSenha = SenhaAutenticador(senha)
+            validacaoSenha = raw_password_validator(senha)
 
             if validacaoSenha:
                 print("\nVocê fez Login!")
