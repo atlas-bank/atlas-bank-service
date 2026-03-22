@@ -1,26 +1,30 @@
-from pydantic import EmailStr
+from exceptions import BadRequestException
+from interfaces.entities_interface import IEntity
 
-class User:
+
+class User(IEntity):
+    collection = "users"  # validar qual o database sendo utilizado
+
     def __init__(
-        self,
-        nome_completo: str,
-        cpf: str,
-        data_nascimento: str,
-        nome_pais: str,
-        rg: str,
-        rg_emissor: str,
-        rg_uf: str,
-        email: EmailStr,
-        celular: str,
-        nacionalidade: str,
-        estado_civil: str,
-        sexo: str,
-        cep: str,
-        endereco: str,
-        estado: str,
-        pais: str,
-        ocupacao: str = "",
-        salario: str = ""
+            self,
+            nome_completo: str,
+            cpf: str,
+            data_nascimento: str,
+            nome_pais: str,
+            rg: str,
+            rg_emissor: str,
+            rg_uf: str,
+            email: str,
+            celular: str,
+            nacionalidade: str,
+            estado_civil: str,
+            sexo: str,
+            cep: str,
+            endereco: str,
+            estado: str,
+            pais: str,
+            ocupacao: str = "",
+            salario: str = ""
     ):
         # Campos obrigatórios
         self.nome_completo = nome_completo
@@ -45,10 +49,12 @@ class User:
         self.salario = salario
         self.cpf_validator()
 
-    # Método para converter para dicionário
+    def cpf_validator(self):
+        if not len(self.cpf) == 11 and not self.cpf.isdigit() and not self.cpf != "00000000000":
+            raise BadRequestException("Invalid CPF!")
+
     def to_dict(self):
         return self.__dict__
 
-    def cpf_validator(self):
-        if  not len(self.cpf) == 11 and not self.cpf.isdigit() and not self.cpf != "00000000000":
-            raise Exception("CPF Inválido!")
+    def get_collection(self):
+        return self.collection
