@@ -9,7 +9,7 @@ from services.api_response import api_response
 def register_exception_handlers(app):
     @app.exception_handler(UnauthorizedException)
     async def unauthorized_handler(request: Request, exc: UnauthorizedException):
-        return api_response(message=str(exc), status_code=HTTPStatus.UNAUTHORIZED)
+        return api_response(message=str(exc), status_code=HTTPStatus.UNAUTHORIZED, data=dict(request.headers))
 
     @app.exception_handler(BadRequestException)
     async def bad_request_handler(request: Request, exc: BadRequestException):
