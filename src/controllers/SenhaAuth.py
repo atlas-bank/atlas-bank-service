@@ -1,4 +1,4 @@
-from exceptions import BadRequestException
+from exceptions.exceptions import BadRequestException
 
 
 def raw_password_validator(senha):

@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from pymongo.results import InsertOneResult
 
-from exceptions import InternalServerError
+from exceptions.exceptions import InternalServerError
 from interfaces.entities_interface import IEntity
 
 url = os.environ.get("MONGODB_URL")

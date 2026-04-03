@@ -1,6 +1,8 @@
 # Imagem base leve do Python
 FROM python:3.11-slim
 
+ENV PYTHONPATH=/app/src
+
 # Diretório de trabalho dentro do container
 WORKDIR /app
 

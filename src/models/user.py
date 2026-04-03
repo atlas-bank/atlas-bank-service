@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from exceptions import BadRequestException
+from exceptions.exceptions import BadRequestException
 from interfaces.entities_interface import IEntity
+
 
 @dataclass
 class User(IEntity):
-    collection = "users"
 
     def __init__(
             self,
@@ -60,4 +60,4 @@ class User(IEntity):
         return self.__dict__
 
     def get_collection(self):
-        return self.collection
+        return "users"
