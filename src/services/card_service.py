@@ -43,6 +43,10 @@ class CardService:
     def get_cards_by_cpf(self, cpf: str):
         response = self.request.get_request(endpoint=f"/cards/{cpf}")
         print(response)
+
+        for card in response["data"]:
+            card["expirationDate"] = self.parse_expiration_date(card["expirationDate"])
+
         return api_response(
             status_code=HTTPStatus.OK,
             message=response["message"],
