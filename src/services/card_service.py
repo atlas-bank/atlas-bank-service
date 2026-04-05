@@ -25,6 +25,7 @@ class CardService:
         return date_obj.strftime("%m/%y")
 
     def create_card(self, card: CreateCardDTO):
+        card.userCPF = card.userCPF.replace(".", "").replace("-", "")
         print(card.model_dump())
         response = self.request.post_request(endpoint="/card", data=card.model_dump())
         response["data"]["expirationDate"] = self.parse_expiration_date(response["data"]["expirationDate"])
