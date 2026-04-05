@@ -35,3 +35,14 @@ class ApiRequest:
             raise UnauthorizedException(message)
 
         return response.json()
+
+    def get_request(self, endpoint: str, data: dict = None) -> dict:
+        response = self.__request(Methods.GET, self.url + endpoint, json=data)
+        print(response.json())
+        message = response.json()["message"]
+        if response.status_code == 400:
+            raise BadRequestException(message)
+        if response.status_code == 401:
+            raise UnauthorizedException(message)
+
+        return response.json()

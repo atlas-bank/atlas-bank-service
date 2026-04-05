@@ -19,18 +19,32 @@ class CardService:
             raise InternalServerError("TSP_URL not set")
         self.request = ApiRequest(tsp_url)
 
-    def parse_expiration_date(self, expiration_date):
+    @staticmethod
+    def parse_expiration_date(expiration_date):
         date_obj = datetime.strptime(expiration_date, "%Y-%m-%d")
 
         return date_obj.strftime("%m/%y")
 
+    @staticmethod
+    def parse_cpf(cpf: str):
+        return cpf.replace(".", "").replace("-", "")
+
     def create_card(self, card: CreateCardDTO):
-        card.userCPF = card.userCPF.replace(".", "").replace("-", "")
+        card.userCPF = self.parse_cpf(card.userCPF)
         print(card.model_dump())
         response = self.request.post_request(endpoint="/card", data=card.model_dump())
         response["data"]["expirationDate"] = self.parse_expiration_date(response["data"]["expirationDate"])
         return api_response(
             status_code=HTTPStatus.CREATED,
+            message=response["message"],
+            data=response["data"],
+        )
+
+    def get_cards_by_cpf(self, cpf: str):
+        response = self.request.get_request(endpoint=f"/cards/{cpf}")
+        print(response)
+        return api_response(
+            status_code=HTTPStatus.OK,
             message=response["message"],
             data=response["data"],
         )
