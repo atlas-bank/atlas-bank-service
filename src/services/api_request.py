@@ -26,6 +26,7 @@ class ApiRequest:
 
     def post_request(self, endpoint: str, data: dict = None) -> dict:
         response = self.__request(Methods.POST, self.url + endpoint, json=data)
+        print(response.json())
         message = response.json()["message"]
 
         if response.status_code == 400:
