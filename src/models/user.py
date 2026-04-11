@@ -59,5 +59,6 @@ class User(IEntity):
     def to_dict(self):
         return self.__dict__
 
-    def get_collection(self):
+    @classmethod
+    def get_collection(cls):
         return "users"
