@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class CreateCardDTO(BaseModel):
-    userCPF: str
+    cpf: str
     pin: str
     userFullName: str
     deviceId: str

@@ -5,16 +5,15 @@ from interfaces.entities_interface import IEntity
 class Account(IEntity):
     @classmethod
     def get_collection(cls) -> str:
-        return "account"
+        return "accounts"
 
-    def __init__(self, agency, account, user_cpf, password=None):
-        self.agency = agency
-        self.account = account
+    def __init__(self, branch, account_number, cpf, password=None):
+        self.branch = branch
+        self.account_number = account_number
         self.password = password
-        self.user_cpf = user_cpf
+        self.cpf = cpf
 
     def to_dict(self):
-
         return self.__dict__
 
     def validate_and_set_password(self, password: str):

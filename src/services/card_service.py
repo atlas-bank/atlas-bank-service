@@ -30,7 +30,7 @@ class CardService:
         return cpf.replace(".", "").replace("-", "")
 
     def create_card(self, card: CreateCardDTO):
-        card.userCPF = self.parse_cpf(card.userCPF)
+        card.cpf = self.parse_cpf(card.cpf)
         print(card.model_dump())
         response = self.request.post_request(endpoint="/card", data=card.model_dump())
         response["data"]["expirationDate"] = self.parse_expiration_date(response["data"]["expirationDate"])
