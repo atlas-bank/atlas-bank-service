@@ -100,7 +100,7 @@ class AccountService:
 
         return api_response(
             status_code=HTTPStatus.OK,
-            message="Successfully validated account_number, please proceed to login",
+            message="Successfully validated Account Number, please proceed to login",
             data={"validate_token": validate_token}
         )
 
