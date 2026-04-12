@@ -7,11 +7,13 @@ class Account(IEntity):
     def get_collection(cls) -> str:
         return "accounts"
 
-    def __init__(self, branch, account_number, cpf, password=None):
+    def __init__(self, branch, account_number, cpf, password=None, validate_token=None, validate_token_expiration=None):
         self.branch = branch
         self.account_number = account_number
         self.password = password
         self.cpf = cpf
+        self.validate_token = None
+        self.validate_token_expiration = None
 
     def to_dict(self):
         return self.__dict__

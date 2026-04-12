@@ -2,9 +2,7 @@ from pydantic import BaseModel
 
 
 class LoginDTO(BaseModel):
-    branch: str
-    account_number: str
-    cpf: str
+    validate_token: str
     password: str
 
 

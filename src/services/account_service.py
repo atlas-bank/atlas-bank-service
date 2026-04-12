@@ -1,4 +1,6 @@
+import logging
 import random
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 from dtos.create_account_dto import CreateAccountDTO
@@ -7,6 +9,10 @@ from exceptions.exceptions import UnauthorizedException
 from models.account import Account
 from repositories.account_repository import AccountRepository
 from services.api_response import api_response
+from utils.token_generator import generate_random_token
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class AccountService:
@@ -54,6 +60,7 @@ class AccountService:
                 # incrementa tentativa de login
                 pass
             raise UnauthorizedException("Please check your login details and try again.")
+        self.repository.reset_validate_token(account.account_number)
 
         return api_response(
             status_code=HTTPStatus.OK,
@@ -62,14 +69,26 @@ class AccountService:
 
     def validate_account(self, validate_account_dto: ValidateAccountDTO):
         is_digit_valid = self.validate_check_digit(validate_account_dto.account_number)
-        account_exists = self.repository.exists_by_account(account=validate_account_dto)
+        is_branch_valid = int(validate_account_dto.branch) in self.branches
 
-        if not is_digit_valid or not account_exists:
+        if not is_digit_valid or not is_branch_valid:
             raise UnauthorizedException("Please check your login details and try again.")
+
+        validate_token = generate_random_token()
+        validate_token_expiration_date = datetime.now(timezone.utc) + timedelta(minutes=5)
+
+        updated = self.repository.find_and_update_token(validate_account_dto, validate_token,
+                                                        validate_token_expiration_date)
+
+        if not updated:
+            raise UnauthorizedException("Please check your login details and try again.")
+
+        print(f"Token '{validate_token}' generated for account {validate_account_dto.account_number}")
 
         return api_response(
             status_code=HTTPStatus.OK,
             message="Successfully validated account_number, please proceed to login",
+            data={"validate_token": validate_token}
         )
 
     def validate_check_digit(self, account_number: str):

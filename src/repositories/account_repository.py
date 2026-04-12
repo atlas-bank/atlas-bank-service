@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from dtos.login_dto import LoginDTO, ValidateAccountDTO
 from models.account import Account
 from repositories.base_repository import BaseRepository
@@ -6,33 +8,32 @@ from repositories.base_repository import BaseRepository
 class AccountRepository(BaseRepository):
     def __init__(self):
         super().__init__(Account)
+        self.client = self.db_client.db[self.entity_class.get_collection()]
 
     def find_by_cpf(self, cpf: str) -> Account:
-        collection_name = self.entity_class.get_collection()
-        data = self.db_client.db[collection_name].find_one({'cpf': cpf})
+        data = self.client.find_one({'cpf': cpf})
         data.pop('_id', None)
         return Account(**data)
 
-    def exists_by_account(self, account: ValidateAccountDTO) -> bool:
-        collection_name = self.entity_class.get_collection()
-        data = self.db_client.db[collection_name].find_one({
-            'branch': account.branch,
-            'account_number': account.account_number
-        })
-        return data is not None
+    def find_and_update_token(self, validate_account_dto: ValidateAccountDTO, validate_token: str,
+                              validate_token_expiration: datetime):
+        filter = {'branch': validate_account_dto.branch, 'account_number': validate_account_dto.account_number}
+        update = {'$set': {'validate_token': validate_token, 'validate_token_expiration': validate_token_expiration}}
+
+        return self.client.find_one_and_update(filter, update) is not None
 
     def find_by_login_credentials(self, login_dto: LoginDTO):
-        collection_name = self.entity_class.get_collection()
-        data = self.db_client.db[collection_name].find_one(
+        result = self.client.find_one(
             {
-                'branch': login_dto.branch,
-                'account_number': login_dto.account_number,
-                'cpf': login_dto.cpf,
-                'password': login_dto.password
+                'validate_token': login_dto.validate_token,
+                'validate_token_expiration': {'$gt': datetime.now(timezone.utc)}
             }
         )
-        if data is None:
-            print("não achou conta")
+        if result is None:
             return None
-        data.pop('_id', None)
-        return Account(**data)
+        result.pop('_id', None)
+        return Account(**result)
+
+    def reset_validate_token(self, account_number: str):
+        self.client.update_one({'account_number': account_number},
+                               {'$unset': {'validate_token': "", 'validate_token_expiration': ""}})
