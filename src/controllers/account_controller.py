@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from core.schemas.responses.account_validation_response_schema import AccountValidationResponseSchema
 from core.schemas.responses.create_account_response_schema import CreateAccountResponseSchema
 from core.schemas.responses.login_response_schema import LoginResponseSchema
 from dtos.create_account_dto import CreateAccountDTO
@@ -16,7 +17,7 @@ def login(login_dto: LoginDTO):
     return service.login(login_dto)
 
 
-@router.post("/auth/validate")
+@router.post("/auth/validate", response_model=AccountValidationResponseSchema)
 def validate_account(validate_account_dto: ValidateAccountDTO):
     return service.validate_account(validate_account_dto)
 
