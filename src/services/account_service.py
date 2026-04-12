@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 from dtos.create_account_dto import CreateAccountDTO
-from dtos.login_dto import ValidateAccountDTO
+from dtos.login_dto import ValidateAccountDTO, LoginDTO
 from exceptions.exceptions import UnauthorizedException
 from models.account import Account
 from repositories.account_repository import AccountRepository
@@ -53,13 +53,23 @@ class AccountService:
     def calculate_check_digit(account_number):
         return (account_number - 1) % 9 + 1
 
-    def login(self, login_dto):
-        account = self.repository.find_by_login_credentials(login_dto)
-        if not account or account.password != login_dto.password:
-            if account:
-                # incrementa tentativa de login
-                pass
+    def validate_password(self, account: Account, provided_password: str):
+        print(account.to_dict())
+        if account.is_blocked:
+            raise UnauthorizedException("Your account is blocked due to excessive login attempts.")
+        if account.password != provided_password:
+            self.repository.increase_invalid_login_chance(validate_token=account.validate_token, max_attempts=5)
             raise UnauthorizedException("Please check your login details and try again.")
+
+        self.repository.reset_invalid_login_chance(account.validate_token)
+
+    def login(self, login_dto: LoginDTO):
+        account = self.repository.find_by_login_credentials(login_dto)
+        if not account:
+            raise UnauthorizedException("Token invalid or expired")
+        print(account.to_dict())
+        self.validate_password(account, login_dto.password)
+
         self.repository.reset_validate_token(account.account_number)
 
         return api_response(
@@ -73,6 +83,9 @@ class AccountService:
 
         if not is_digit_valid or not is_branch_valid:
             raise UnauthorizedException("Please check your login details and try again.")
+
+        if self.repository.is_account_blocked(validate_account_dto):
+            raise UnauthorizedException("your account is blocked due to excessive login attempts.")
 
         validate_token = generate_random_token()
         validate_token_expiration_date = datetime.now(timezone.utc) + timedelta(minutes=5)

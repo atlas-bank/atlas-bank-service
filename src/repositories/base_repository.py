@@ -10,6 +10,6 @@ class BaseRepository:
     def save(self, entity: IEntity):
         return self.db_client.save(entity)
 
-    def find_one(self, query: dict):
+    def find_one(self, query: dict, projection: dict = None):
         collection_name = self.entity_class.get_collection()
-        return self.db_client.db[collection_name].find_one(query)
+        return self.db_client.db[collection_name].find_one(query, projection)
