@@ -15,4 +15,5 @@ def validate_api_key(x_api_key: str = Header(None)):
         raise UnauthorizedException("x-api-key header is required")
 
     if x_api_key != api_key_internal:
+        print(f"{api_key_internal} != {x_api_key}")
         raise UnauthorizedException("Invalid API Key")
