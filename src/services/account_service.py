@@ -57,6 +57,7 @@ class AccountService:
         print(account.to_dict())
         if account.is_blocked:
             raise UnauthorizedException("Your account is blocked due to excessive login attempts.")
+
         if account.password != provided_password:
             self.repository.increase_invalid_login_chance(validate_token=account.validate_token, max_attempts=5)
             raise UnauthorizedException("Please check your login details and try again.")

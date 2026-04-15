@@ -6,6 +6,9 @@ from interfaces.entities_interface import IEntity
 
 @dataclass
 class User(IEntity):
+    @classmethod
+    def get_collection(cls):
+        return "users"
 
     def __init__(
             self,
@@ -58,7 +61,3 @@ class User(IEntity):
 
     def to_dict(self):
         return self.__dict__
-
-    @classmethod
-    def get_collection(cls):
-        return "users"
