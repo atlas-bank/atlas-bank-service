@@ -25,8 +25,10 @@ def create_app() -> FastAPI:
     # rotas dos controllers
     from controllers.account_controller import router as account_controller
     from controllers.card_controller import router as card_controller
+    from controllers.card_controller import router as user_controller
 
     app.include_router(card_controller)
     app.include_router(account_controller)
+    app.include_router(user_controller)
 
     return app
