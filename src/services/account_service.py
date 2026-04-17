@@ -3,7 +3,7 @@ import random
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
-from dtos.create_account_dto import CreateAccountDTO
+from dtos.create_user_dto import CreateAccountDTO
 from dtos.login_dto import ValidateAccountDTO, LoginDTO
 from exceptions.exceptions import UnauthorizedException
 from models.account import Account
