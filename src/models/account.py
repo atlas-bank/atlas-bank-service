@@ -1,11 +1,14 @@
 from exceptions.exceptions import BadRequestException
 from interfaces.entities_interface import IEntity
-
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 class Account(IEntity):
     @classmethod
     def get_collection(cls) -> str:
         return "accounts"
+
+    _ph = PasswordHasher()
 
     def __init__(self, branch, account_number, cpf, password=None,
                  validate_token=None,
@@ -30,3 +33,15 @@ class Account(IEntity):
         elif not password.isdigit():
             raise BadRequestException("Password must contain only digits")
         self.password = password
+
+    @staticmethod
+    def validate_password(self, password: str):
+        if len(password) != 6:
+            raise BadRequestException("Invalid password length")
+        elif not password.isdigit():
+            raise BadRequestException("Password must contain only digits")
+        self.password = self.hash_password(password)
+
+    @staticmethod
+    def hash_password(password: str):
+        return Account._ph.hash(password)

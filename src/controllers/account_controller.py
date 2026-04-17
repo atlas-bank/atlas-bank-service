@@ -6,7 +6,7 @@ from core.schemas.responses.login_response_schema import LoginResponseSchema
 from dtos.create_account_dto import CreateAccountDTO
 from dtos.login_dto import LoginDTO, ValidateAccountDTO
 from services.account_service import AccountService
-
+from models.user import User
 router = APIRouter()
 
 service = AccountService()
@@ -22,9 +22,10 @@ def validate_account(validate_account_dto: ValidateAccountDTO):
     return service.validate_account(validate_account_dto)
 
 
-@router.post("/account", response_model=CreateAccountResponseSchema)
-def create_account(create_account_dto: CreateAccountDTO):
-    return service.create_account(create_account_dto)
+@router.post("/user", response_model=CreateAccountResponseSchema)
+def create_account(account: CreateAccountDTO):
+    account_validation = User
+    return service.create_account(account)
 
 
 @router.get("/account/{cpf}")
