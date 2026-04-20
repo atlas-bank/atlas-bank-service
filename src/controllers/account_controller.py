@@ -1,12 +1,10 @@
 from fastapi import APIRouter
 
 from core.schemas.responses.account_validation_response_schema import AccountValidationResponseSchema
-from core.schemas.responses.create_user_response_schema import CreateAccountResponseSchema
 from core.schemas.responses.login_response_schema import LoginResponseSchema
-from dtos.create_user_dto import CreateAccountDTO
 from dtos.login_dto import LoginDTO, ValidateAccountDTO
 from services.account_service import AccountService
-from models.user import User
+
 router = APIRouter()
 
 service = AccountService()
