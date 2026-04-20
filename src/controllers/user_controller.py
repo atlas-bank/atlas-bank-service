@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 
-from core.schemas.responses.create_account_response_schema import CreateAccountResponseSchema
-from dtos.create_account_dto import CreateAccountDTO
-from services.account_service import AccountService
+from core.schemas.responses.create_user_response_schema import CreateUserResponseSchema
+from dtos.create_user_dto import CreateUserDTO
+from services.user_service import UserService
 from models.user import User
+
 router = APIRouter()
 
-service = AccountService()
+service = UserService()
 
 
-@router.post("/user", response_model=CreateAccountResponseSchema)
-def create_account(account: CreateAccountDTO):
-    account_validation = User
-    return service.create_account(account)
+@router.post("/user", response_model=CreateUserResponseSchema)
+def create_account(user: CreateUserDTO):
+    return service.create_user(user)

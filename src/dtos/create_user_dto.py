@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from models.user import User
 
-class CreateAccountDTO(BaseModel):
+class CreateUserDTO(BaseModel):
     user: User
     password: str
