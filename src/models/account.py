@@ -1,7 +1,7 @@
 from exceptions.exceptions import BadRequestException
 from interfaces.entities_interface import IEntity
 from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
+from argon2.exceptions import VerifyMismatchError, VerificationError
 
 class Account(IEntity):
     @classmethod
@@ -27,21 +27,21 @@ class Account(IEntity):
     def to_dict(self):
         return self.__dict__
 
-    def validate_and_set_password(self, password: str):
-        if not len(password) == 6:
-            raise BadRequestException("Invalid password length")
-        elif not password.isdigit():
-            raise BadRequestException("Password must contain only digits")
-        self.password = password
-
     @staticmethod
     def validate_password(self, password: str):
         if len(password) != 6:
             raise BadRequestException("Invalid password length")
         elif not password.isdigit():
             raise BadRequestException("Password must contain only digits")
-        self.password = self.hash_password(password)
 
     @staticmethod
-    def hash_password(password: str):
-        return Account._ph.hash(password)
+    def set_password(self, password: str):
+        self.validate_password(password)
+        self.password = self._ph.hash(password)
+
+
+def verify_password(self, password: str) -> bool:
+    try:
+        return self._ph.verify(self.password, password)
+    except (VerifyMismatchError, VerificationError):
+        return False
