@@ -56,7 +56,7 @@ class User(IEntity):
         self.salary = salary
 
     def cpf_validator(self):
-        if not len(self.cpf) == 11 and not self.cpf.isdigit() and not self.cpf != "00000000000":
+        if not len(self.cpf) == 11 or not self.cpf.isdigit() and not self.cpf != "00000000000":
             raise BadRequestException("Invalid CPF!")
 
     def to_dict(self):

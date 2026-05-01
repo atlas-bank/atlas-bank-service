@@ -3,13 +3,13 @@ import random
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
-from dtos.create_account_dto import CreateAccountDTO
 from dtos.login_dto import ValidateAccountDTO, LoginDTO
 from exceptions.exceptions import UnauthorizedException
 from models.account import Account
 from repositories.account_repository import AccountRepository
 from services.api_response import api_response
 from utils.token_generator import generate_random_token
+from dtos.create_user_dto import CreateUserDTO
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -20,7 +20,7 @@ class AccountService:
         self.repository = AccountRepository()
         self.branches = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]
 
-    def create_account(self, create_account_dto: CreateAccountDTO):
+    def create_account(self, create_account_dto: CreateUserDTO):
         account_number = self.generate_account_number()
         check_digit = self.calculate_check_digit(account_number)
         account = Account(branch=str(self.select_random_branch()),
