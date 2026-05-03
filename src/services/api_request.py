@@ -11,6 +11,8 @@ class ApiRequest:
     def __init__(self, url: str):
         self.api_key = os.getenv("API_KEY_INTERNAL")
         self.url = url
+        if not url:
+            print("No url provided")
 
     def __request(self, method: Methods, url: str, **kwargs):
         response = requests.request(
@@ -24,8 +26,13 @@ class ApiRequest:
 
         return response
 
-    def post_request(self, endpoint: str, data: dict = None) -> dict:
-        response = self.__request(Methods.POST, self.url + endpoint, json=data)
+    def post_request(self, endpoint: str = None, data: dict = None) -> dict:
+
+        url = self.url + endpoint if endpoint else self.url
+
+        print("Url: ", url)
+
+        response = self.__request(Methods.POST, url, json=data)
         print(response.json())
         message = response.json()["message"]
 
